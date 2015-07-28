@@ -1,0 +1,60 @@
+{
+  "name": "docpad-plugin-contentful",
+  "version": "2.0.1",
+  "description": "DocPad plugin that adds the ability to import data from a Contentful api",
+  "homepage": "https://github.com/markphillips100/docpad-plugin-contentful",
+  "license": {
+    "type": "MIT"
+  },
+  "keywords": [
+    "docpad",
+    "docpad-plugin",
+    "contentful"
+  ],
+  "badges": {
+    "travis": true,
+    "npm": true,
+    "npmdownloads": true,
+    "david": true,
+    "daviddev": true
+  },
+  "author": "Mark Phillips",
+  "maintainers": [
+    "Mark Phillips (markphillips100@github.com)"
+  ],
+  "contributors": [],
+  "bugs": {
+    "url": "https://github.com/markphillips100/docpad-plugin-contentful/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/markphillips100/docpad-plugin-contentful.git"
+  },
+  "engines": {
+    "node": ">=0.8"
+  },
+  "peerDependencies": {
+    "docpad": "6"
+  },
+  "dependencies": {
+    "contentful": "^1.1.1",
+    "lodash": "^3.10.0",
+    "path": "^0.11.14",
+    "pluralize": "^1.1.2",
+    "querystring": "^0.2.0",
+    "string": "^3.3.0",
+    "when": "^3.7.3"
+  },
+  "devDependencies": {
+    "docpad": "6",
+    "coffee-script": "^1.9.1",
+    "projectz": "^0.5.0"
+  },
+  "main": "./out/contentful.plugin.js",
+  "scripts": {
+    "test": "node ./out/contentful.test.js"
+  },
+  "cakeConfiguration": {
+    "COFFEE_SRC_PATH": "src"
+  }
+}
