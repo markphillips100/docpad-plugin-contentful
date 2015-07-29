@@ -12,11 +12,9 @@
 <!-- /BADGES -->
 
 
-Uppercase your text document's content by adding either the `uc` or `uppercase` extension to it
+Import Contentful entries into DocPad collections.
 
-Convention:  `.txt.(uc|uppercase)`
-
-
+Inspired by and based on https://github.com/nfriedly/docpad-plugin-mongodb
 
 <!-- INSTALL/ -->
 
@@ -29,45 +27,126 @@ docpad install contentful
 <!-- /INSTALL -->
 
 
-<!-- HISTORY/ -->
+## Configuration
 
-## History
-[Discover the change history by heading on over to the `HISTORY.md` file.](https://github.com/markphillips100/docpad-plugin-contentful/blob/master/HISTORY.md#files)
+### Simple example
 
-<!-- /HISTORY -->
+Add the following to your [docpad configuration file](http://docpad.org/docs/config):
 
+``` coffee
+plugins:
+  contentful:
+    collections: [
+      accessToken: "23e9e3d2eb2a2303d64262692..."
+	  spaceId: "sd0nae..."
+      collectionName: "posts"
+      relativeDirPath: "blog"
+      extension: ".html"
+      sort: date: 1 # newest first
+      meta:
+        layout: "blogpost"
+    ]
+```
 
-<!-- CONTRIBUTE/ -->
+### Fancy example
 
-## Contribute
+``` coffee
+plugins:
+  contentful:
+    collectionDefaults:
+		accessToken: "23e9e3d2eb2a2303d64262692..."
+		spaceId: "sd0nae..."
+	  
+    collections: [
+      {
+        # accessToken and spaceId are imported from the defaults
+        collectionName: "posts"
+        relativeDirPath: "blog"
+        extension: '.html.eco'
+        sort: date: 1 # newest first
+        injectDocumentHelper: (document) ->
+          document.setMeta(
+            layout: 'default'
+            tags: (document.get('tags') or []).concat(['post'])
+            data: """
+              <%- @partial('post/'+@document.tumblr.type, @extend({}, @document, @document.tumblr)) %>
+              """
+          )
+      },
 
-[Discover how you can contribute by heading on over to the `CONTRIBUTING.md` file.](https://github.com/markphillips100/docpad-plugin-contentful/blob/master/CONTRIBUTING.md#files)
+      {
+        collectionName: "comments"
+        filters: content_type: "a content type id"
+        extension: '.html.markup'
+        sort: date: -1 #oldest first
+        meta:
+          write: false
+      },
 
-<!-- /CONTRIBUTE -->
+      {
+        spaceId: "some other space id"
+        filters: content_type: "another content type id"
+        collectionName: "stats"
+        extension: ".json"
+      }
+    ]
+```
 
+### Config details:
 
-<!-- BACKERS/ -->
+Each configuration object in `collections` inherits default values from `collectionDefaults` and then from the built-in defaults:
 
-## Backers
+```coffee
+	accessToken: "accessToken" # the api key for the accessing the Contentful space
+	spaceId: "spaceId" # the spaceId for the space in Contentful
+    relativeDirPath: null # defaults to collectionName
+    extension: ".json"
+    injectDocumentHelper: null # function to format documents
+    collectionName: "my-content" # name to give the collection, defaults to "contentful"
+    sort: null # http://documentcloud.github.io/backbone/#Collection-comparator
+    meta: {} # automatically added to each document
+    filters: {} # optional Contentful query properties.  "content_type" is usually the minimum required.
+```
 
-### Maintainers
+The default directory for where the imported documents will go inside is the collectionName.
+You can override this using the `relativeDirPath` plugin config option.
 
-These amazing people are maintaining this project:
+The default content for the imported documents is JSON data. You can can customise this with the `injectDocumentHelper`
+plugin configuration option which is a function that takes in a single [Document Model](https://github.com/bevry/docpad/blob/master/src/lib/models/document.coffee).
 
-- Mark Phillips (markphillips100@github.com)
+If you would like to render a template, add a layout, and change the extension, you can do it via the `meta` configuration
+option or you can get fancy and do this with (for example) the
+[eco](https://github.com/docpad/docpad-plugin-eco) and [partials](https://github.com/docpad/docpad-plugin-partials)
+plugins and following collection configuration:
 
-### Sponsors
+``` coffee
+extension: '.html.eco'
+injectDocumentHelper: (document) ->
+  document.setMeta(
+    layout: 'default'
+    tags: (document.get('tags') or []).concat(['post'])
+    data: """
+			<%- @partial('post/'+@document.tumblr.type, @extend({}, @document, @document.tumblr)) %>
+			"""
+  )
+```
 
-No sponsors yet! Will you be the first?
+The `sort` field is [passed as the comparator to Query Engine](https://learn.bevry.me/queryengine/guide#querying) which tries it as a
+[MongoDB-style sort](http://docs.mongodb.org/manual/reference/method/cursor.sort/) first and then a
+[Backbone.js comparator](http://documentcloud.github.io/backbone/#Collection-comparator) second.
 
+### Creating a File Listing
 
+As imported documents are just like normal documents, you can also list them just as you would other documents. Here is an example of a `index.html.eco` file that would output the titles and links to all the blog posts from the simple example above:
 
-### Contributors
-
-No contributors yet! Will you be the first?
-[Discover how you can contribute by heading on over to the `CONTRIBUTING.md` file.](https://github.com/markphillips100/docpad-plugin-contentful/blob/master/CONTRIBUTING.md#files)
-
-<!-- /BACKERS -->
+``` erb
+<h2>Blog:</h2>
+<ul><% for post in @getCollection('posts').toJSON(): %>
+	<li>
+		<a href="<%= post.url %>"><%= post.title %></a>
+	</li>
+<% end %></ul>
+```
 
 
 <!-- LICENSE/ -->

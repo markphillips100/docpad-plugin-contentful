@@ -1,6 +1,6 @@
 {
   "name": "docpad-plugin-contentful",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "DocPad plugin that adds the ability to import data from a Contentful api",
   "homepage": "https://github.com/markphillips100/docpad-plugin-contentful",
   "license": {
@@ -22,7 +22,9 @@
   "maintainers": [
     "Mark Phillips (markphillips100@github.com)"
   ],
-  "contributors": [],
+  "contributors": [
+    "markphillips100 (https://github.com/markphillips100)"
+  ],
   "bugs": {
     "url": "https://github.com/markphillips100/docpad-plugin-contentful/issues"
   },
@@ -43,7 +45,8 @@
     "pluralize": "^1.1.2",
     "querystring": "^0.2.0",
     "string": "^3.3.0",
-    "when": "^3.7.3"
+    "when": "^3.7.3",
+    "taskgroup": "^4.0.5"
   },
   "devDependencies": {
     "docpad": "6",
